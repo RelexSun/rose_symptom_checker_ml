@@ -1,124 +1,203 @@
 # 🌹 Red Rose Flower Symptom Checker Expert System
 
-An intelligent ML-powered system for diagnosing rose flower diseases based on symptoms.
+An intelligent **FastAPI + Machine Learning** system for diagnosing rose flower diseases based on observable symptoms. The system combines a rule-based expert layer with an ML model and supports secure JWT-based authentication.
 
-## Features
+---
 
-- 🔐 User authentication (register/login with JWT)
-- 🤖 Machine Learning disease prediction
-- 📊 Diagnosis history tracking
-- 🔍 Symptom-based expert system
-- 🐳 Docker containerization
-- 📝 RESTful API with FastAPI
+## ✨ Features
 
-## Tech Stack
+- 🔐 **JWT Authentication** (Register / Login)
+- 🤖 **Machine Learning Disease Prediction** (Scikit-learn)
+- 📊 **Diagnosis History Tracking** (per user)
+- 🔍 **Symptom-based Expert System**
+- 🐳 **Dockerized Environment** (API, PostgreSQL, pgAdmin)
+- 📝 **RESTful API** with FastAPI & OpenAPI (Swagger)
 
-- **Backend**: FastAPI, Python 3.11
-- **Database**: PostgreSQL 16
-- **ML**: Scikit-learn, Pandas
-- **Package Manager**: uv
-- **Authentication**: JWT (python-jose)
-- **ORM**: SQLAlchemy 2.0
+---
 
-## Quick Start
+## 🧰 Tech Stack
+
+| Layer           | Technology                  |
+| --------------- | --------------------------- |
+| Backend         | FastAPI (Python 3.11)       |
+| Database        | PostgreSQL 16               |
+| ORM             | SQLAlchemy 2.0              |
+| Auth            | JWT (python-jose)           |
+| ML              | Scikit-learn, Pandas, NumPy |
+| Package Manager | uv                          |
+| Containers      | Docker & Docker Compose     |
+
+---
+
+## 🚀 Quick Start (Docker – Recommended)
 
 ### Prerequisites
 
-- Docker & Docker Compose
-- Python 3.11+ (for local development)
-- uv package manager
+- Docker
+- Docker Compose
 
-### Installation
+### 1️⃣ Clone the repository
 
-1. **Clone the repository**
+```bash
+git clone <your-repo-url>
+cd rose-symptom-checker
+```
 
-   ```bash
-   git clone
-   cd rose-symptom-checker
-   ```
+### 2️⃣ Environment variables
 
-2. **Set up environment variables**
+```bash
+cp .env.example .env
+```
 
-   ```bash
-   cp .env.example .env
-   # Edit .env with your configurations
-   ```
+Edit `.env`:
 
-3. **Run with Docker**
+```env
+SECRET_KEY=your-secret-key
+DATABASE_URL=postgresql://postgres:postgres@db:5432/rose_checker
+```
 
-   ```bash
-   docker-compose up --build
-   ```
+### 3️⃣ Run with Docker
 
-4. **Access the application**
-   - API: http://localhost:8000
-   - API Docs: http://localhost:8000/docs
-   - PgAdmin: http://localhost:5050
+```bash
+docker compose up --build
+```
 
-### Local Development (without Docker)
+### 4️⃣ Access services
 
-1. **Install dependencies**
+- **API** → [http://localhost:8000](http://localhost:8000)
+- **Swagger Docs** → [http://localhost:8000/docs](http://localhost:8000/docs)
+- **pgAdmin** → [http://localhost:5050](http://localhost:5050)
 
-   ```bash
-   uv pip install -e ".[dev]"
-   ```
+---
 
-2. **Set up database**
+## 🧑‍💻 Local Development (Virtual Environment)
 
-   ```bash
-   # Make sure PostgreSQL is running
-   # Update DATABASE_URL in .env
-   ```
+### Prerequisites
 
-3. **Train the ML model**
+- Python **3.11+**
+- PostgreSQL running locally
+- `uv` installed
 
-   ```bash
-   python scripts/train_model.py
-   ```
+```bash
+pip install uv
+```
 
-4. **Run the application**
-   ```bash
-   uvicorn src.main:app --reload
-   ```
+---
 
-## API Endpoints
+### 1️⃣ Create & activate virtual environment
 
-### Authentication
+```bash
+python -m venv .venv
+```
 
-- `POST /api/v1/auth/register` - Register new user
-- `POST /api/v1/auth/login` - Login user
+**macOS / Linux**
+
+```bash
+source .venv/bin/activate
+```
+
+**Windows (PowerShell)**
+
+```powershell
+.venv\\Scripts\\Activate.ps1
+```
+
+---
+
+### 2️⃣ Install dependencies (from pyproject.toml)
+
+```bash
+uv pip install -e .
+```
+
+For development tools:
+
+```bash
+uv pip install -e ".[dev]"
+```
+
+---
+
+### 3️⃣ Configure environment
+
+```bash
+cp .env.example .env
+```
+
+Update `DATABASE_URL`:
+
+```env
+DATABASE_URL=postgresql://postgres:postgres@localhost:5432/rose_checker
+```
+
+---
+
+### 4️⃣ Train ML model (required once)
+
+```bash
+python scripts/train_model.py
+```
+
+This generates:
+
+- Trained model
+- Label encoder
+
+---
+
+### 5️⃣ Run the application
+
+```bash
+uvicorn rose_symptom_checker.main:app --reload
+```
+
+---
+
+## 🔐 Authentication Flow (JWT)
+
+1. **Register** → `/api/v1/auth/register`
+2. **Login** → `/api/v1/auth/login`
+3. Receive **Access Token**
+4. Authorize requests using:
+
+```
+Authorization: Bearer <access_token>
+```
+
+Swagger uses **HTTP Bearer auth** (token-only input).
+
+---
+
+## 📡 API Endpoints
+
+### Auth
+
+- `POST /api/v1/auth/register`
+- `POST /api/v1/auth/login`
 
 ### Diagnosis
 
-- `POST /api/v1/diagnosis/check` - Check rose disease symptoms
-- `GET /api/v1/diagnosis/history` - Get user diagnosis history
-- `GET /api/v1/diagnosis/history/{id}` - Get specific diagnosis
+- `POST /api/v1/diagnosis/check`
+- `GET /api/v1/diagnosis/history`
+- `GET /api/v1/diagnosis/history/{id}`
 
-## Project Structure
+---
 
-```
-src/
-├── api/          # API routes and endpoints
-├── core/         # Core configurations
-├── db/           # Database models
-├── schemas/      # Pydantic schemas
-├── services/     # Business logic
-└── ml/           # ML models and utilities
-```
+## 🧠 Disease Categories
 
-## Disease Categories
+The system can detect:
 
-The system can diagnose the following rose diseases:
+1. **Black Spot** – Dark leaf spots
+2. **Powdery Mildew** – White powder coating
+3. **Rust** – Orange / rust-colored spots
+4. **Botrytis Blight** – Gray mold
+5. **Rose Mosaic** – Yellow mosaic patterns
+6. **Crown Gall** – Tumor-like growths
+7. **Healthy** – No disease detected
 
-1. **Black Spot** - Dark spots on leaves
-2. **Powdery Mildew** - White powdery coating
-3. **Rust** - Orange/rust colored spots
-4. **Botrytis Blight** - Gray mold on flowers
-5. **Rose Mosaic** - Yellow mosaic patterns
-6. **Crown Gall** - Tumor-like growths
-7. **Healthy** - No disease detected
+---
 
-## Symptoms Input Example
+## 🧪 Symptoms Input Example
 
 ```json
 {
@@ -126,8 +205,35 @@ The system can diagnose the following rose diseases:
 }
 ```
 
-## Testing
+---
+
+## 🧪 Testing
 
 ```bash
 pytest tests/
 ```
+
+---
+
+## 📁 Project Structure
+
+```
+src/
+├── rose_symptom_checker/
+│   ├── api/          # API routes
+│   ├── core/         # Config, security, settings
+│   ├── db/           # Models & session
+│   ├── schemas/      # Pydantic schemas
+│   ├── services/     # Business logic
+│   └── ml/           # ML model utilities
+scripts/          # Training & DB scripts
+tests/
+```
+
+---
+
+## ✅ Notes
+
+- Tables are auto-created on startup via SQLAlchemy
+- ML model **must be trained before first run**
+- Docker users do NOT need local Python or Po
